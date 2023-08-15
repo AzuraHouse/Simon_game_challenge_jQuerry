@@ -15,7 +15,7 @@ $(document).keyup(function(event){
         btnArray = $(".btn")
         let randomItem = btnArray[Math.floor(Math.random()*btnArray.length)];
         $("#"+ randomItem.id).css("border", "10px solid white")
-        setTimeout(() => {$($("#"+ randomItem.id).css("border", "10px solid black"))}, "5000")
+        setTimeout(() => {$($("#"+ randomItem.id).css("border", "10px solid black"))}, "1000")
     }
 })
 
