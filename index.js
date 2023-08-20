@@ -1,25 +1,9 @@
-// $("#yellow").click(function(){
-//     let yellow = new Audio("sounds/yellow.mp3");
-//     yellow.play()
-//     yellow.volume = 0.1
-//     $("#yellow").animate({opacity: 0.5});
-//     setTimeout(() => $("#yellow").animate({opacity: 1}))
-    
-// })
-
-// repeat and create the animation
-// function animations(){
-//     setInterval(function(){
-//         btnArray = $(".btn")
-//         let randomItem = btnArray[Math.floor(Math.random()*btnArray.length)];
-//         $("#"+ randomItem.id).css("border", "10px solid white");
-//         setTimeout(() => {$($("#"+ randomItem.id).css("border", "10px solid black"))}, "1000")
-//     }, 2000)
-// }
 let currentLevel = 1;
+let rightAnswer = 0;
+let lifes = 3
+let timeinterval = 3000
 
-
-//* main user click animation
+//* main user click animation and sound
 function userClick(buttonId) {
         let music = new Audio("sounds/" + buttonId + ".mp3")
         music.volume = 0.1
@@ -27,46 +11,66 @@ function userClick(buttonId) {
         $("#"+buttonId).animate({opacity: "0.5"})
         setTimeout(() => $("#"+buttonId).animate({opacity: 1}))
     }
+
+//* setting animation
+function animations(){
+    btnArray = $(".btn")
+    let randomItemId = btnArray[Math.floor(Math.random()*btnArray.length)].id;
+    $("#"+ randomItemId).css("border", "10px solid white");
+    setTimeout(() => {$($("#"+ randomItemId).css("border", "10px solid black"))}, "1000")
+    //* calling user click
+
+    $(".btn").off("click").on("click", function (){
+        //* checking what button is clicked
+        clickedButtonId = this.id;
+        userClick(clickedButtonId);
+        //* responding user clicks to glowing button
+        if (clickedButtonId == randomItemId){
+            console.log("Right button was clicked!")
+            rightAnswer += 1
+            console.log("right answer"+ " "+rightAnswer)
+        } else {
+            console.log("wrong button was clicked!")
+            let music = new Audio("sounds/wrong.mp3")
+            music.volume = 0.1
+            music.play()
+            lifes -= 1
+            console.log("lifes remaining"+ ""+ lifes)
+        }
+        //* if the 3 buttons are pressed the game should turn into next lvl
+        if (rightAnswer == 3){
+            console.log("YES")
+            timeinterval -= 500
+            currentLevel += 1
+            $("h1").text("Level" + " " + currentLevel)
+            rightAnswer = 0
+            console.log("time has decreased by"+""+ timeinterval)
+        }
+        })
+
+}
+
+
+
 //* getting pressed keys
 $(document).keyup(function(event){
     //* starting the game
     if (event.key === "a"){
-        //* setting animation
-        function animations(){
-            btnArray = $(".btn")
-            let randomItemId = btnArray[Math.floor(Math.random()*btnArray.length)].id;
-            $("#"+ randomItemId).css("border", "10px solid white");
-            setTimeout(() => {$($("#"+ randomItemId).css("border", "10px solid black"))}, "1000")
-            //* calling user click
-
-            $(".btn").off("click").on("click", function (){
-                clickedButtonId = this.id;
-                userClick(clickedButtonId);
-                if (clickedButtonId == randomItemId){
-                    console.log("Right button was clicked!")
-                } else {
-                    console.log("wrong button was clicked!")
-                    let music = new Audio("sounds/wrong.mp3")
-                    music.volume = 0.2
-                    music.play()
-                }
-            })
-            //* checking what button user clicked
-    
-        }
-        // $(".btn").off("click").on("click", function (){
-        //     clickedButtonId = this.id;
-        //     userClick(clickedButtonId);
-        // })
-        //* setting interval buttons will glow every 2 sec and game will end after 8 sec
-        myInterval = setInterval(animations, 2000);
+        //* create lvl showing h1 after "a" is pressed
+        $("h1").text("Level" + " " + currentLevel)
+        myInterval = setInterval(animations, parseInt(timeinterval));
+        console.log(timeinterval)
         setTimeout(() => {
             clearInterval(myInterval)
         }, 10000000)
-        //* responding user clicks to button glowing
-        //? How to get randomItem.id outer the function and compare it with click id??
+        //* setting interval buttons
+        //* minimum 1 sec otherwise it's getting glitchy
+        
+        // TODO creating lvl difficulty
+            // TODO the pressed buttons to achive next lvl should be increased by x2
+            // TODO the time should be deacresed by 500ms
+            // TODO lifes should equal 5 for every wrong answer -1 life, after all lifes are spend game is over
 
-        //! creating lvl difficulty
 
     };
 })
